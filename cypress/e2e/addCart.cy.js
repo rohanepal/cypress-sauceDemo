@@ -1,32 +1,32 @@
-describe('SauceDemo UI Tests', () => {
+import productsPage from '../pages/product';
 
-  context('Add to Cart Scenarios', () => {
+describe('Add to Cart Scenarios', () => {
 
-    // Login once before each test using custom command
-    beforeEach(() => {
-      cy.login()
-    })
+  beforeEach(() => {
+    cy.login();
+  });
+  // Add single product to cart
+  it('adds a single product to the cart', () => {
+    productsPage.addItemByIndex(0);
+    productsPage.getCartCount().should('contain', 1);
+    // Verify button text changes to 'Remove'
+    productsPage.getProductByIndex(0)
+      .find('button')
+      .should('have.text', 'Remove');
+  });
+   // Add multiple products to cart
+  it('adds multiple products', () => {
+    productsPage.addItemByIndex(0);
+    productsPage.addItemByIndex(1);
+    productsPage.getCartCount().should('contain', 2);
+  });
+  // Verify items in cart page for one item
+  it('verifies items appear in cart page', () => {
+    productsPage.addItemByIndex(0);
+    productsPage.getCartCount().should('contain', 1);
+    productsPage.goToCart();
+    cy.url().should('contain', '/cart.html');
+    cy.get('.cart_item').should('have.length', 1);
+  });
 
-    it('adds a single product to the cart', () => {
-      cy.get('.inventory_item').first().find('button').click()
-      cy.get('.shopping_cart_badge').should('contain', '1')
-      cy.get('.inventory_item').first().find('button').should('have.text', 'Remove')
-    })
-
-    it('adds multiple products to the cart', () => {
-      cy.get('.inventory_item').eq(0).find('button').click()
-      cy.get('.inventory_item').eq(1).find('button').click()
-      cy.get('.shopping_cart_badge').should('contain', '2')
-    })
-
-    it('verifies items appear in the cart page', () => {
-      cy.get('.inventory_item').first().find('button').click()
-      cy.get('.shopping_cart_badge').should('contain', '1')
-      cy.get('.shopping_cart_link').click()
-      cy.url().should('include', '/cart.html')
-      cy.get('.cart_item').should('have.length', 1)
-    })
-
-  })
-
-})
+});

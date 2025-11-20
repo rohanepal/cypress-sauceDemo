@@ -12,5 +12,6 @@ describe('Valid User Login Test', () => {
       loginPage.getPassword().type(user.password);
       loginPage.getSubmitBtn().click();
     })
+    cy.url().should('include', 'inventory.html');
   })
 });
